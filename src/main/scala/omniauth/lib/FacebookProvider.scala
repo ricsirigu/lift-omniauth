@@ -101,7 +101,7 @@ class FacebookProvider(val clientId:String, val secret:String) extends OmniauthP
   }
 
   def validateToken(accessToken:AuthToken): Boolean = {
-    val tempRequest = :/("graph.facebook.com").secure / "me" <<? Map("access_token" -> accessToken.token)
+    val tempRequest = :/("graph.facebook.com").secure / "me" <<? Map("fields" -> "id,email,name,first_name,last_name", "access_token" -> accessToken.token)
     try{
       val json = Omniauth.http(tempRequest >- JsonParser.parse)
 
