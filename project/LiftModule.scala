@@ -1,7 +1,7 @@
 import sbt._
 import sbt.Keys._
 
-object LiftModuleBuild extends Build {
+object LiftModule {
 
   val liftVersion = SettingKey[String]("liftVersion", "Full version number of the Lift Web Framework")
 
