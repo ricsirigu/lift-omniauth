@@ -1,45 +1,43 @@
+import LiftModule.{liftVersion, liftEdition}
+
 name := "Omniauth"
 
 organization := "net.liftmodules"
 
 homepage := Some(url("https://github.com/ghostm/lift-omniauth"))
 
-version := "0.17"
+version := "0.18"
 
-liftVersion <<= liftVersion ?? "2.5.1"
+liftVersion := "3.1.0"
 
-liftEdition <<= liftVersion apply { _.substring(0,3) }
+liftEdition := liftVersion.value.substring(0,3)
 
-name <<= (name, liftEdition) { (n, e) =>  n + "_" + e }
+name := name.value + "_" + liftEdition.value
 
-// Necessary beginning with sbt 0.13, otherwise Lift editions get messed up.
-// E.g. "2.5" gets converted to "2-5"
 moduleName := name.value.toLowerCase
 
-scalaVersion <<= scalaVersion ?? "2.9.1"  // This project's scala version is purposefully set at the lowest common denominator to ensure each version compiles.
+scalaVersion := "2.11.11"
 
-crossScalaVersions := Seq("2.10.4", "2.9.2", "2.9.1-1", "2.9.1") // Excluding "2.11.1" since Lift 2.5.1 isn't built for it
-
-resolvers += "CB Central Mirror" at "http://repo.cloudbees.com/content/groups/public"
+crossScalaVersions := Seq("2.11.11", "2.12.2")
 
 resolvers += "Sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/"
 
-libraryDependencies <++= liftVersion { v =>
-  Seq("net.liftweb"   %% "lift-webkit"  % v  % "provided",
-      "net.databinder" %% "dispatch-core" % "0.8.10",
-      "net.databinder" %% "dispatch-http" % "0.8.10",
-      "net.databinder" %% "dispatch-oauth" % "0.8.10",
-      "net.databinder" %% "dispatch-http-json" % "0.8.10"
-    )
-}
+libraryDependencies++= Seq(
+  "net.liftweb"   %% "lift-webkit"  % liftVersion.value  % "provided",
+  "net.databinder" %% "dispatch-core" % "0.8.10",
+  "net.databinder" %% "dispatch-http" % "0.8.10",
+  "net.databinder" %% "dispatch-oauth" % "0.8.10",
+  "net.databinder" %% "dispatch-http-json" % "0.8.10"
+)
+
 
 //scalacOptions ++= Seq("-feature")
 
-publishTo <<= version { _.endsWith("SNAPSHOT") match {
+publishTo := (version.value.endsWith("SNAPSHOT") match {
         case true  => Some("snapshots" at "https://oss.sonatype.org/content/repositories/snapshots")
         case false => Some("releases" at "https://oss.sonatype.org/service/local/staging/deploy/maven2")
   }
- }
+)
 
 credentials += Credentials( file("sonatype.credentials") )
 
