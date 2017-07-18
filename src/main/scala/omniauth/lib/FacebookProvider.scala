@@ -122,7 +122,7 @@ class FacebookProvider(val clientId:String, val secret:String) extends OmniauthP
   }
 
   def tokenToId(accessToken:AuthToken): Box[String] = {
-    val tempRequest = :/("graph.facebook.com").secure / "me" <<? Map("access_token" -> accessToken.token)
+    val tempRequest = :/("graph.facebook.com").secure / "me" <<? Map("fields" -> "id", "access_token" -> accessToken.token)
     try{
       val json = Omniauth.http(tempRequest >- JsonParser.parse)
       Full((json \ "id").extract[String])
